@@ -6,7 +6,8 @@ namespace DiscordBot
     {
         static void Main(string[] args)
         {
-            var bot = new Bot();            
+            var bot = new Bot();
+            bot.RunAsync().GetAwaiter().GetResult();
         }
     }
 }

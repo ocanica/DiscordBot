@@ -51,13 +51,13 @@ namespace DiscordBot
             Commands = Client.UseCommandsNext(commandsConfig);
 
             await Client.ConnectAsync();
-            // Enforce delay of 1ms to avoid client disconnecting early (bug)
-            await Task.Delay(1);
+            // Enforce indefinite delay to avoid closing the client -> ending the Program.cs class
+            await Task.Delay(-1);
         }
 
         private Task OnClientReady(ReadyEventArgs e)
         {
-            return null;
+            return Task.CompletedTask;
         }
     }
 }
