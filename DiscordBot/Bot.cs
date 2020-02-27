@@ -1,4 +1,5 @@
-﻿using DSharpPlus;
+﻿using DiscordBot.Commands;
+using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.EventArgs;
 using Newtonsoft.Json;
@@ -43,12 +44,14 @@ namespace DiscordBot
                 // declared in the config.json file
                 StringPrefixes = new string[] { configJson.Prefix },
                 EnableDms = false,
-                EnableMentionPrefix = true
+                EnableMentionPrefix = true,
+                DmHelp = true,
             };
 
             Client = new DiscordClient(config);
             Client.Ready += OnClientReady;
             Commands = Client.UseCommandsNext(commandsConfig);
+            Commands.RegisterCommands<BasicCommands>();
 
             await Client.ConnectAsync();
             // Enforce indefinite delay to avoid closing the client -> ending the Program.cs class
