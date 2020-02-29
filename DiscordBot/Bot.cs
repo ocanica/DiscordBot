@@ -48,9 +48,12 @@ namespace DiscordBot
                 DmHelp = true,
             };
 
+            // Create new DiscordClient and pass in configuration details via the class constructor
             Client = new DiscordClient(config);
             Client.Ready += OnClientReady;
             Commands = Client.UseCommandsNext(commandsConfig);
+
+            // Here I register the commands available to the bot
             Commands.RegisterCommands<BasicCommands>();
 
             await Client.ConnectAsync();
