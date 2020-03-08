@@ -1,8 +1,6 @@
 ﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using DSharpPlus.Interactivity;
 using System.Threading.Tasks;
 
 namespace DiscordBot.Commands
@@ -16,14 +14,25 @@ namespace DiscordBot.Commands
             await ctx.Channel.SendMessageAsync("Pong").ConfigureAwait(false);
         }
 
-        //Basic command with arguments
         [Command("Add")]
         [Description("Adds two numbers together")]
-        public async Task Add(CommandContext ctx, [Description("First digit")]int numberOne, [Description("Second digit")]int numberTwo)
+        [RequireRoles(RoleCheckMode.Any, "Moderator", "Owner")]
+        public async Task Add(CommandContext ctx, 
+            [Description("First digit")]int numberOne, 
+            [Description("Second digit")]int numberTwo)
         {
             await ctx.Channel
                 .SendMessageAsync((numberOne + numberTwo).ToString())
                 .ConfigureAwait(false);
+        }
+
+        [Command("response")]
+        public async Task Response(CommandContext ctx)
+        {
+            var interactivity = ctx.Client.GetInteractivity();
+            var message = await interactivity.WaitForMessageAsync(x => x.Channel == ctx.Channel)
+                .ConfigureAwait(false);
+            await ctx.Channel.SendMessageAsync(message.Result.Content);
         }
     }
 }

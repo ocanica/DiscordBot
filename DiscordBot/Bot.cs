@@ -2,6 +2,7 @@
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.EventArgs;
+using DSharpPlus.Interactivity;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -14,13 +15,13 @@ namespace DiscordBot
     public class Bot
     {
         public DiscordClient Client { get; private set; }
+        public InteractivityExtension Interactivity { get; private set; }
         public CommandsNextExtension Commands { get; private set; }
 
         public async Task RunAsync()
         {
             var json = string.Empty;
 
-            // Read stored token value from the config file
             using(var file = File.OpenRead("config.json"))
                 using (var streamReader = new StreamReader(file, new UTF8Encoding(false)))
                     json = await streamReader.ReadToEndAsync().ConfigureAwait(false);
@@ -28,36 +29,29 @@ namespace DiscordBot
 
             var config = new DiscordConfiguration()
             {
-                // Token detail could have be inputted manually, however this creates another
-                // level of abstract and protects against improper access
                 Token = configJson.Token,
-                // Boilerplate configuration
                 TokenType = TokenType.Bot,
                 AutoReconnect = true,
                 LogLevel = LogLevel.Debug,
                 UseInternalLogHandler = true
             };
 
+            Client = new DiscordClient(config);
+            Client.Ready += OnClientReady;
+            Client.UseInteractivity(new InteractivityConfiguration());
+
             var commandsConfig = new CommandsNextConfiguration()
             {
-                // StringPrefix may have multiple prefixes, in this case I am using the one
-                // declared in the config.json file
                 StringPrefixes = new string[] { configJson.Prefix },
                 EnableDms = false,
                 EnableMentionPrefix = true,
                 DmHelp = true,
             };
 
-            // Create new DiscordClient and pass in configuration details via the class constructor
-            Client = new DiscordClient(config);
-            Client.Ready += OnClientReady;
             Commands = Client.UseCommandsNext(commandsConfig);
-
-            // Here I register the commands available to the bot
             Commands.RegisterCommands<BasicCommands>();
 
             await Client.ConnectAsync();
-            // Enforce indefinite delay to avoid closing the client -> ending the Program.cs class
             await Task.Delay(-1);
         }
 
