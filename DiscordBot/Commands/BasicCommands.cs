@@ -26,13 +26,21 @@ namespace DiscordBot.Commands
                 .ConfigureAwait(false);
         }
 
-        [Command("response")]
-        public async Task Response(CommandContext ctx)
+        [Command("respondmessage")]
+        public async Task RespondMessage(CommandContext ctx)
         {
             var interactivity = ctx.Client.GetInteractivity();
             var message = await interactivity.WaitForMessageAsync(x => x.Channel == ctx.Channel)
                 .ConfigureAwait(false);
             await ctx.Channel.SendMessageAsync(message.Result.Content);
+        }
+
+        [Command("respondreaction")]
+        public async Task RespondReaction(CommandContext ctx)
+        {
+            var interactivity = ctx.Client.GetInteractivity();
+            var message = await interactivity.WaitForReactionAsync(x => x.Channel == ctx.Channel);
+            await ctx.Channel.SendMessageAsync(message.Result.Emoji);
         }
     }
 }
