@@ -11,12 +11,11 @@ namespace DiscordBot.Commands
         [Description("Returns 'pong'")]
         public async Task Ping(CommandContext ctx)
         {
-            await ctx.Channel.SendMessageAsync("Pong").ConfigureAwait(false);
+            await ctx.Channel.SendMessageAsync("pong").ConfigureAwait(false);
         }
 
-        [Command("Add")]
+        [Command("add")]
         [Description("Adds two numbers together")]
-        [RequireRoles(RoleCheckMode.Any, "Moderator", "Owner")]
         public async Task Add(CommandContext ctx, 
             [Description("First digit")]int numberOne, 
             [Description("Second digit")]int numberTwo)
